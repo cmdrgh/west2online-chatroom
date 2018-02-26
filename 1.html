@@ -1,0 +1,113 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/1.css">
+    <link rel="stylesheet" href="css/2.css">
+    <title>socket.io聊天室</title>
+    
+    <script type="text/javascript" src="js/1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket;
+        var username1;
+        socket = io('http://localhost:3000');
+        //监听服务器端的事件推送
+        socket.on('connect', function () {
+            console.log('连接成功');
+        });
+        socket.on('username', function (data) {
+            username1 = data;
+        });
+        socket.on('enter', function (data,number) {
+            var str = '';
+            str += '<p class="chat-msg3">' + data + ' has entered the chat room</p>';
+            document.getElementsByClassName("chat-content")[0].innerHTML += str;
+            document.getElementById("number2").innerHTML=number;
+        })
+        socket.on('chat-msg', function (data1, data2) {
+            console.log(data1);
+            console.log(data2);
+            if (data1 == username1) {
+                var str = '';
+                str += '<div class="chat-piece1"><p class="chat-username1">' + data1 + '</p><p class="chat-msg1">' + data2 + '</p></div>';
+                document.getElementsByClassName("chat-content")[0].innerHTML += str;
+            }
+            else {
+                var str = '';
+                str += '<div class="chat-piece2"><p class="chat-username2">' + data1 + '</p><p class="chat-msg2">' + data2 + '</p></div>';
+                document.getElementsByClassName("chat-content")[0].innerHTML += str;
+            }
+        });
+        socket.on('quit', function (data,number) {
+            if(data==null){return;}
+            var str = '';
+            str += '<p class="chat-msg3">' + data + ' has quit the chat room</p>';
+            document.getElementsByClassName("chat-content")[0].innerHTML += str;
+            document.getElementById("number2").innerHTML=number;
+        });
+        socket.on('disconnect', function () {
+            console.log('断开连接');
+        });
+        function login() {
+            if (document.getElementById("login-username").value == '') { alert('please write your username here'); return; }
+            socket.emit('login', document.getElementById("login-username").value);
+            document.getElementById("login-username").value = '';
+            document.getElementsByClassName("login-part")[0].style.display = "none";
+            document.getElementsByClassName("chat-part")[0].style.display = "block";
+
+        }
+        function back() {
+            socket.emit('back',username1);
+            document.getElementsByClassName("chat-part")[0].style.display = "none";
+            document.getElementsByClassName("login-part")[0].style.display = "block";
+        }
+        function send() {
+            if (document.getElementById("chat-sendTxt").value == '') { alert('please write your messages here'); return; }
+            socket.emit('chat', document.getElementById("chat-sendTxt").value);
+            document.getElementById("chat-sendTxt").value = '';
+        }
+        function delete1() {
+            document.getElementById("chat-sendTxt").value = '';
+        }
+    </script>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="login-part">
+            <h2>Welcome To Chat Room</h2>
+            <input name="username" id="login-username" class="login" type="text" placeholder="username" />
+            <input id="login-password" class="login" type="password" placeholder="password" />
+            <input id="login-btn" class="login" type="submit" value="Login" onclick="login()" />
+        </div>
+        <div class="chat-part">
+            <h2 onclick="back()">&lt;back</h2>
+            <p id='number1'>number:</p>
+            <p id='number2'>0</p>
+
+            <h1>Chat Room</h1>
+            <div class="chat-content">
+            </div>
+            <div class="bottom">
+                <input id="chat-sendTxt" type="text" placeholder="please write your messages here" />
+                <button id="chat-delete" onclick="delete1()">✖</button>
+                <button id="chat-sendBtn" onclick="send()">send</button>
+            </div>
+        </div>
+        <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</body>
+
+</html>
