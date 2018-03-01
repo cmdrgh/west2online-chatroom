@@ -166,7 +166,7 @@ body {
 }
 
 .chat-piece1:after{
-    display:block;height:0;clear:both;
+    content:"";display:block;height:0;clear:both;
 }
 
 .chat-username1{
@@ -199,7 +199,7 @@ body {
 }
 
 .chat-piece2:after{
-    content:".";display:block;height:0;clear:both;visibility:hidden
+    content:"";display:block;height:0;clear:both;
 }
 
 .chat-username2{

@@ -1,9 +1,8 @@
 var express = require('express')
 var app = express()
-
 var server = require('http').createServer(app);//server是http服务器
 var io = require('socket.io')(server);//io是socket对象
-var number=0;
+var number = 0;
 //socket服务器监听连接 表示已经建立连接
 io.on('connection', function (socket) {
   //socket.emit('request', /* */); // 向客户端发送一个事件
@@ -21,18 +20,18 @@ io.on('connection', function (socket) {
     console.log(data + '登录了');
     socket.emit('username', data);
     number++;
-    io.emit('enter', data,number);
+    io.emit('enter', data, number);
   });
   socket.on('disconnect', function () {
     number--;
-    io.emit('quit', socket.username,number);
+    io.emit('quit', socket.username, number);
   })
   socket.on('chat', function (data) {
     io.emit('chat-msg', socket.username, data);
   });
   socket.on('back', function (data) {
     number--;
-    io.emit('quit', data,number);
+    io.emit('quit', data, number);
   })
 });
 
